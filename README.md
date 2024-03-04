@@ -38,5 +38,3 @@ By default, NoPy2Exe is configured to:
 
 - Requires Windows and PowerShell to run
 - Requires admin rights when installing downloaded Python version to the system
-
-<span style="color:transparent">python execution python to exe bundle python project virtual environment virtualenv wrapper exe compile bundle packaging deployment windows powershell script handling management automation version control git github dependencies repo venv project </span>
