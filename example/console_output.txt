@@ -1,0 +1,55 @@
+Active code page: 65001
+###########################################
+#                                         #
+#     Automatic Python Installation       #
+#                                         #
+###########################################
+#                                         #
+# 1. Downloading and Installing Python    #
+# 2. Creating a Virtual Environment       #
+# 3. Installing Necessary Libraries       #
+#                                         #
+###########################################
+
+Several gigabytes of free space may be required to continue the installation.
+
+Current script run parameters:
+---------------------------------
+Scan System: True
+Scan Drives: C:,D:
+Allow Cancel: False
+Install Python: True
+Setup Environment: True
+Install Dependencies: True
+Python Version: 3.11.7
+Update Pip: True
+Required Space: 1 GB
+Recreate Environment: False
+Remove Environment: False
+---------------------------------
+Checking for an internet connection..
+Internet connection is available.
+You have chosen to scan the system for python.exe.
+Multiple Python installations found:
+1: D:\Visual Studio 2022\Common7\IDE\CommonExtensions\Microsoft\VC\SecurityIssueAnalysis\pyt
+hon
+<..other installations of python..>
+9: D:\work_projects\python\testing\.venv\Scripts
+Enter the number of the desired Python installation: 9
+You have selected Python at: D:\work_projects\python\testing\.venv\Scripts
+Python version 3.11.7 successfully installed.
+Requirement already satisfied: pip in d:\work_projects\python\testing\.venv\lib\site-package
+s (24.0)
+Installing necessary libraries...
+Requirement already satisfied: opencv-python==4.9.0.80 in d:\work_projects\python\testing\.v
+env\lib\site-packages (from -r requirements.txt (line 1)) (4.9.0.80)
+Requirement already satisfied: pytesseract==0.3.8 in d:\work_projects\python\testing\.venv\l
+ib\site-packages (from -r requirements.txt (line 2)) (0.3.8)
+Requirement already satisfied: numpy>=1.21.2 in d:\work_projects\python\testing\.venv\lib\si
+te-packages (from opencv-python==4.9.0.80->-r requirements.txt (line 1)) (1.25.2)
+Requirement already satisfied: Pillow in d:\work_projects\python\testing\.venv\lib\site-pack
+ages (from pytesseract==0.3.8->-r requirements.txt (line 2)) (10.1.0)
+Launching script main.py...
+Hello world!
+Installation and script execution for main.py completed.
+Press Enter to continue...:

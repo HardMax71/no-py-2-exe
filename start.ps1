@@ -143,6 +143,7 @@ if ($InstallPython -and $pythonPaths.Count -eq 0) {
         exit
     }
 
+    # Maybe use winget? But it requires previous installation..
     $pythonInstaller = "python-$PythonVersion.exe"
     $pythonUrl = "https://www.python.org/ftp/python/$PythonVersion/$pythonInstaller"
     Invoke-WebRequest -Uri $pythonUrl -OutFile $pythonInstaller
