@@ -14,51 +14,82 @@ param (
     [string]$ScriptName = "main.py"
 )
 
+function WriteError([string] $message)
+{
+    Write-Host $message -ForegroundColor Red
+}
+
+function WriteWarning([string] $message)
+{
+    Write-Host $message -ForegroundColor Yellow
+}
+
+function WriteSuccess([string] $message)
+{
+    Write-Host $message -ForegroundColor Green
+}
+
 # Check for the /help parameter and display script information
 if ($Help) {
-    Write-Host "USAGE:" -ForegroundColor Yellow
-    Write-Host "`t.\scriptName.ps1 [PARAMETERS]`n"
+    WriteWarning @"
+USAGE:
+    .\scriptName.ps1 [PARAMETERS]
 
-    Write-Host "PARAMETER DESCRIPTION:" -ForegroundColor Yellow
-    Write-Host "`t-ScanSystem`n`t`tChecks for Python presence in the entire system. Default is $true."
-    Write-Host "`t`tExample: -ScanSystem:$false to disable system scan.`n"
+PARAMETER DESCRIPTION:
+    -ScanSystem
+        Checks for Python presence in the entire system. Default is $true.
+        Example: -ScanSystem:$false to disable system scan.
 
-    Write-Host "`t-ScanDrives`n`t`tSpecifies which drives to scan. Default is 'C:,D:'."
-    Write-Host "`t`tExample: -ScanDrives 'E:,F:' to scan drives E: and F:.`n"
+    -ScanDrives
+        Specifies which drives to scan. Default is 'C:,D:'.
+        Example: -ScanDrives 'E:,F:' to scan drives E: and F:.
 
-    Write-Host "`t-AllowCancel`n`t`tAllows to cancel execution. Default is $false."
-    Write-Host "`t`tExample: -AllowCancel:$true to allow installation cancellation.`n"
+    -AllowCancel
+        Allows to cancel execution. Default is $false.
+        Example: -AllowCancel:$true to allow installation cancellation.
 
-    Write-Host "`t-InstallPython`n`t`tInstalls Python if not found. Default is $true."
-    Write-Host "`t`tExample: -InstallPython:$false to not install Python.`n"
+    -InstallPython
+        Installs Python if not found. Default is $true.
+        Example: -InstallPython:$false to not install Python.
 
-    Write-Host "`t-SetupEnvironment`n`t`tCreates and activates a virtual environment. Default is $true."
-    Write-Host "`t`tExample: -SetupEnvironment:$false to not create an environment.`n"
+    -SetupEnvironment
+        Creates and activates a virtual environment. Default is $true.
+        Example: -SetupEnvironment:$false to not create an environment.
 
-    Write-Host "`t-InstallDependencies`n`t`tInstalls libraries from requirements.txt. Default is $true."
-    Write-Host "`t`tExample: -InstallDependencies:$false to not install dependencies.`n"
+    -InstallDependencies
+        Installs libraries from requirements.txt. Default is $true.
+        Example: -InstallDependencies:$false to not install dependencies.
 
-    Write-Host "`t-PythonVersion`n`t`tSpecifies the Python version to install. Default is '3.11.7'."
-    Write-Host "`t`tExample: -PythonVersion '3.9.1' to install Python 3.9.1.`n"
+    -PythonVersion
+        Specifies the Python version to install. Default is '3.11.7'.
+        Example: -PythonVersion '3.9.1' to install Python 3.9.1.
 
-    Write-Host "`t-UpdatePip`n`t`tUpdates pip to the latest version. Default is $true."
-    Write-Host "`t`tExample: -UpdatePip:$false to not update pip.`n"
+    -UpdatePip
+        Updates pip to the latest version. Default is $true.
+        Example: -UpdatePip:$false to not update pip.
 
-    Write-Host "`t-RequiredSpaceInGB`n`t`tRequired amount of free disk space in GB. Default is 1.0."
-    Write-Host "`t`tExample: -RequiredSpaceInGB 2.5 for installation if at least 2.5 GB is available.`n"
+    -RequiredSpaceInGB
+        Required amount of free disk space in GB. Default is 1.0.
+        Example: -RequiredSpaceInGB 2.5 for installation if at least 2.5 GB is available.
 
-    Write-Host "`t-RecreateEnvironment`n`t`tRecreates the virtual environment if it already exists. Default is $false."
-    Write-Host "`t`tExample: -RecreateEnvironment:$true to recreate the environment.`n"
+    -RecreateEnvironment
+        Recreates the virtual environment if it already exists. Default is $false.
+        Example: -RecreateEnvironment:$true to recreate the environment.
 
-    Write-Host "`t-RemoveEnvironment`n`t`tRemoves the virtual environment if it exists. Default is $false."
-    Write-Host "`t`tExample: -RemoveEnvironment:$true to remove the environment.`n"
+    -RemoveEnvironment
+        Removes the virtual environment if it exists. Default is $false.
+        Example: -RemoveEnvironment:$true to remove the environment.
 
-    Write-Host "`t-ScriptName`n`t`tSpecifies the Python script to execute. Default is 'main.py'."
-    Write-Host "`t`tExample: -ScriptName 'script.py' to execute 'script.py'.`n"
+    -ScriptName
+        Specifies the Python script to execute. Default is 'main.py'.
+        Example: -ScriptName 'script.py' to execute 'script.py'.
 
-    Write-Host "EXAMPLES:" -ForegroundColor Yellow
-    Write-Host "`t.\start.ps1 -ScanSystem:$false -InstallPython:$true -PythonVersion '3.8.10' -UpdatePip:$true -ScriptName 'other_script.py'" -ForegroundColor Green
-    Write-Host "`t.\start.ps1 -AllowCancel:$true -SetupEnvironment:$false -ScriptName 'run_me.py'`n" -ForegroundColor Green
+EXAMPLES:
+    .\start.ps1 -ScanSystem:$false -InstallPython:$true -PythonVersion '3.8.10' -UpdatePip:$true -ScriptName 'other_script.py'
+    .\start.ps1 -AllowCancel:$true -SetupEnvironment:$false -ScriptName 'run_me.py'
+
+"@ 
+
     Pause
     Exit
 }
@@ -70,39 +101,47 @@ chcp 65001
 # To run in Windows PS ISE: execute the command below in the shell
 # Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
-Write-Host "###########################################" -ForegroundColor Yellow
-Write-Host "#                                         #" -ForegroundColor Yellow
-Write-Host "#     Automatic Python Installation       #" -ForegroundColor Yellow
-Write-Host "#                                         #" -ForegroundColor Yellow
-Write-Host "###########################################" -ForegroundColor Yellow
-Write-Host "#                                         #" -ForegroundColor Yellow
-Write-Host "# 1. Downloading and Installing Python    #" -ForegroundColor Yellow
-Write-Host "# 2. Creating a Virtual Environment       #" -ForegroundColor Yellow
-Write-Host "# 3. Installing Necessary Libraries       #" -ForegroundColor Yellow
-Write-Host "#                                         #" -ForegroundColor Yellow
-Write-Host "###########################################" -ForegroundColor Yellow
-Write-Host "`nSeveral gigabytes of free space may be required to continue the installation.`n" -ForegroundColor Red
-Write-Host "Current script run parameters:" -ForegroundColor Yellow
-Write-Host "---------------------------------" -ForegroundColor Yellow
-Write-Host "Scan System: $ScanSystem" -ForegroundColor Yellow
-Write-Host "Scan Drives: $ScanDrives" -ForegroundColor Yellow
-Write-Host "Allow Cancel: $AllowCancel" -ForegroundColor Yellow
-Write-Host "Install Python: $InstallPython" -ForegroundColor Yellow
-Write-Host "Setup Environment: $SetupEnvironment" -ForegroundColor Yellow
-Write-Host "Install Dependencies: $InstallDependencies" -ForegroundColor Yellow
-Write-Host "Python Version: $PythonVersion" -ForegroundColor Yellow
-Write-Host "Update Pip: $UpdatePip" -ForegroundColor Yellow
-Write-Host "Required Space: $RequiredSpaceInGB GB" -ForegroundColor Yellow
-Write-Host "Recreate Environment: $RecreateEnvironment" -ForegroundColor Yellow
-Write-Host "Remove Environment: $RemoveEnvironment" -ForegroundColor Yellow
-Write-Host "---------------------------------" -ForegroundColor Yellow
+WriteWarning = @"
+###########################################
+#                                         #
+#     Automatic Python Installation       #
+#                                         #
+###########################################
+#                                         #
+# 1. Downloading and Installing Python    #
+# 2. Creating a Virtual Environment       #
+# 3. Installing Necessary Libraries       #
+#                                         #
+###########################################
+
+"@
+
+WriteError "Several gigabytes of free space may be required to continue the installation."
+
+WriteWarning @"
+
+Current script run parameters:
+---------------------------------
+Scan System: $ScanSystem
+Scan Drives: $ScanDrives
+Allow Cancel: $AllowCancel
+Install Python: $InstallPython
+Setup Environment: $SetupEnvironment
+Install Dependencies: $InstallDependencies
+Python Version: $PythonVersion
+Update Pip: $UpdatePip
+Required Space: $RequiredSpaceInGB GB
+Recreate Environment: $RecreateEnvironment
+Remove Environment: $RemoveEnvironment
+---------------------------------
+"@ 
 
 if ($AllowCancel) {
-    Write-Host "Press any key to continue or X to cancel the installation." -ForegroundColor Yellow
+    WriteWarning "Press any key to continue or X to cancel the installation."
     $userInput = Read-Host "Select action"
 
     if ($userInput -ieq "X") {
-        Write-Host "Installation canceled by the user. You may close the window." -ForegroundColor Red
+        WriteError "Installation canceled by the user. You may close the window." 
         Pause
         exit
     }
@@ -111,9 +150,9 @@ if ($AllowCancel) {
 Write-Host "Checking for an internet connection.."
 try {
     $response = Invoke-WebRequest -Uri "http://www.python.org" -UseBasicParsing -TimeoutSec 5
-    Write-Host "Internet connection is available." -ForegroundColor Green
+    WriteSuccess "Internet connection is available."
 } catch {
-    Write-Host "No internet connection. Check your connection." -ForegroundColor Red
+    WriteError "No internet connection. Check your connection."
     Pause
     exit
 }
@@ -122,23 +161,23 @@ $scanChoice = $ScanSystem
 $scanDrives = $ScanDrives.Split(",").Trim()
 
 if ($scanChoice) {
-    Write-Host "You have chosen to scan the system for python.exe." -ForegroundColor Yellow
+    WriteWarning "You have chosen to scan the system for python.exe."
     $pythonPaths = Get-ChildItem -Path $scanDrives -Recurse -ErrorAction SilentlyContinue |
         Where-Object { $_.Name -match 'python[0-9.-]*\.exe$' } |
         Select-Object -ExpandProperty DirectoryName
 } else {
-    Write-Host "Scanning the system path for python.exe." -ForegroundColor Yellow
+    WriteWarning "Scanning the system path for python.exe."
     $pathDirs = $env:PATH -split ';'
     $pythonPaths = $pathDirs | Where-Object { Test-Path "$_\python.exe" } | ForEach-Object { $_ }
 }
 
 if ($InstallPython -and $pythonPaths.Count -eq 0) {
-    Write-Host "Python not found in standard locations. Attempting to install Python..." -ForegroundColor Red
+    WriteError "Python not found in standard locations. Attempting to install Python..." 
 
     # Checking available disk space
     $drive = Get-PSDrive -Name (Get-Location).Drive.Name
     if ($drive.Free -lt $RequiredSpaceInGB * 1GB) {
-        Write-Host "Not enough disk space to continue the installation. At least $RequiredSpaceInGB GB is required." -ForegroundColor Red
+        WriteError "Not enough disk space to continue the installation. At least $RequiredSpaceInGB GB is required."
         Pause
         exit
     }
@@ -147,11 +186,11 @@ if ($InstallPython -and $pythonPaths.Count -eq 0) {
     $pythonInstaller = "python-$PythonVersion.exe"
     $pythonUrl = "https://www.python.org/ftp/python/$PythonVersion/$pythonInstaller"
     Invoke-WebRequest -Uri $pythonUrl -OutFile $pythonInstaller
-    Write-Host "Download completed." -ForegroundColor Green
+    WriteSuccess "Download completed."
 
     Write-Host "Installing Python..."
     Start-Process $pythonInstaller -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait -NoNewWindow
-    Write-Host "Python version $PythonVersion successfully installed." -ForegroundColor Green
+    WriteSuccess "Python version $PythonVersion successfully installed."
 } elseif ($pythonPaths.Count -eq 1) {
     $pythonPath = $pythonPaths[0]
     Write-Host "Found Python at: $pythonPath"
@@ -166,9 +205,9 @@ if ($InstallPython -and $pythonPaths.Count -eq 0) {
     $selectedPythonIndex = Read-Host "Enter the number of the desired Python installation"
     if ($selectedPythonIndex -and $selectedPythonIndex -match '^\d+$' -and $selectedPythonIndex -le $pythonPaths.Count) {
         $pythonPath = $pythonPaths[$selectedPythonIndex - 1]
-        Write-Host "You have selected Python at: $pythonPath" -ForegroundColor Green
+        WriteSuccess "You have selected Python at: $pythonPath"
     } else {
-        Write-Host "Invalid input. Please enter a number corresponding to one of the listed paths." -ForegroundColor Red
+        WriteError "Invalid input. Please enter a number corresponding to one of the listed paths."
         Pause
         exit
     }
@@ -181,12 +220,12 @@ $pythonExecutable = Join-Path -Path $pythonPath -ChildPath "python.exe"
 try {
     $pythonVersionOutput = & "$pythonPath\python.exe" --version
     if ($pythonVersionOutput -like "Python $PythonVersion*") {
-        Write-Host "Python version $PythonVersion successfully installed." -ForegroundColor Green
+        WriteSuccess "Python version $PythonVersion successfully installed."
     } else {
         throw "Python version does not match the expected: $PythonVersion"
     }
 } catch {
-    Write-Host "Error checking Python installation: $_" -ForegroundColor Red
+    WriteError "Error checking Python installation: $_"
     Pause
     exit
 }
@@ -194,23 +233,23 @@ try {
 # Virtual environment management
 $venvPath = ".\venv"
 if ($RemoveEnvironment -and (Test-Path $venvPath)) {
-    Write-Host "Removing existing virtual environment at $venvPath..." -ForegroundColor Yellow
+    WriteWarning "Removing existing virtual environment at $venvPath..." 
     Remove-Item -Path $venvPath -Recurse -Force
-    Write-Host "Virtual environment removed." -ForegroundColor Green
+    WriteSuccess "Virtual environment removed."
 }
 
 if ($SetupEnvironment -or $RecreateEnvironment) {
     if (Test-Path $venvPath) {
         if ($RecreateEnvironment) {
-            Write-Host "Recreating virtual environment at $venvPath..." -ForegroundColor Yellow
+            WriteWarning "Recreating virtual environment at $venvPath..."
             Remove-Item -Path $venvPath -Recurse -Force
-            Write-Host "Old virtual environment removed." -ForegroundColor Green
+            WriteSuccess "Old virtual environment removed." 
 
-            Write-Host "Creating virtual environment at $venvPath..." -ForegroundColor Yellow
+            WriteWarning "Creating virtual environment at $venvPath..."
             & "$pythonPath\python.exe" -m venv $venvPath
-            Write-Host "Virtual environment created." -ForegroundColor Green
+            WriteSuccess "Virtual environment created." 
         } else {
-            Write-Host "Virtual environment already exists at $venvPath. Using existing one." -ForegroundColor Yellow
+            WriteWarning "Virtual environment already exists at $venvPath. Using existing one." 
         }
     }
 }
@@ -219,10 +258,10 @@ if (Test-Path $venvPath) {
     # Activating the virtual environment
     $activateScript = Join-Path -Path $venvPath -ChildPath "Scripts\Activate.ps1"
     if (Test-Path $activateScript) {
-        Write-Host "Activating virtual environment..." -ForegroundColor Yellow
+        WriteWarning "Activating virtual environment..."
         . $activateScript
     } else {
-        Write-Host "Activation script not found: $activateScript" -ForegroundColor Red
+        WriteError "Activation script not found: $activateScript"
     }
 }
 
@@ -242,9 +281,9 @@ if ($InstallDependencies) {
 Write-Host "Launching script $ScriptName..."
 & "$pythonExecutable" $ScriptName
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "Error executing script $ScriptName" -ForegroundColor Red
+    WriteError "Error executing script $ScriptName"
 } else {
-    Write-Host "Installation and script execution for $ScriptName completed." -ForegroundColor Green
+    WriteSuccess "Installation and script execution for $ScriptName completed."
 }
 
 
